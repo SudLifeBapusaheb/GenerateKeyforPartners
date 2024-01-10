@@ -1,0 +1,272 @@
+﻿@model GenerateKeyforPartners.Models.UserLogin
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script type="text/javascript">
+        window.onload = window.history.forward(0);
+
+    </script>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login - Star Union Dai-ichi</title>
+
+    <link href="~/Content/Images/bg_Logo.png" rel="shortcut icon" type="image/x-icon" />
+
+</head>
+<body style="background: url('../../Content/Images/Insu_bg.png') no-repeat fixed; background-color: #2d598a; height: 100% ">
+    <script src="~/Content/Js/jquery-min.js"></script>
+    <script src="~/Content/Js/bootstrap.js"></script>
+    <link href="~/Content/CSS&JS/bootstrap.css" rel="stylesheet" />
+    <script src="~/Content/Js/BaseApiService.js"></script>
+    
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div>
+            <header>
+                <div class="container-fluid">
+                    <div class="col-lg-4">&nbsp;</div>
+                    <div class="col-lg-4">
+                        <div id="loginbox" style="margin-top:70px;">
+                            <div class="panel panel-info" style="border:none !important;">
+                                <div class="panel-heading" style="background:#fff !important">
+                                    <div class="panel-title">
+                                        <center>
+                                            <img src="~/Content/Images/Logo.jpg" class="img-responsive" />
+                                            @*<h1 style="color:red;font-weight:bold">Generic Payments Gateway</h1>*@
+                                        </center>
+                                    </div>
+
+                                </div>
+                                <div style="background:#db2e03 !important; color:#fff; border-radius:1px !important; padding:13px;">
+                                    <div class="panel-title">User Login</div>
+                                </div>
+                                <div class="panel-body">
+                                    <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+                                    <form id="loginform" class="form-horizontal" role="form" autocomplete="off" method="post" action="../Account/ValidateOTPAndLogin" enctype="multipart/form-data">
+                                        <div style="margin-bottom: 10px; width:100%;" class="input-group">
+                                            <span style="font-weight:bold; font-size:13px;">Email Id</span>
+                                            @Html.TextBoxFor(m => m.EmpId, new { @id = "EmpId", @class = "form-control", autocomplete = "off", style = "width:100%;  border-radius:3px;" }) <br />
+                                            <span id="lblError" style=" color:red"></span>
+                                        </div>
+
+
+                                        <div class="col-lg-12">
+                                            <div class="row">
+                                                <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                                    <div id="divTimer" style="display:none;">
+                                                        <div style="display: flex; width:20%; justify-content:center; padding-top: 0%;">
+                                                            <input id="minutes" type="text" style="width: 50%; border: none; outline: none; font-size: 16px; font-weight: bold; text-align:left;" readonly="readonly"> :
+                                                            <input id="seconds" type="text" style="width: 50%;  border: none; outline: none; font-size: 16px; font-weight: bold; text-align:right" readonly="readonly">
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div id="lnkGenerate" class="col-xs-5 col-sm-5 col-md-5 col-lg-5 " style="margin-left: inherit;">
+                                                    <a id="lnkGenerateOTP" href="javascript:getOTP()" style="color:#eb1d1d; font-size:12px;" onclick="FocusText();">GetOTP</a>
+                                                    <a id="lnkResendOTP" href="javascript:resendOTP()" style="color:#eb1d1d; font-size:12px;">Resend</a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div style="margin-bottom: 10px; width:100%;display:none;" id="divOTP" class="input-group">
+                                            <span style="font-weight:bold; font-size:13px;">OTP </span>
+                                            @* <input type="password" name="Password" id="Password" value="@Model.Password" class="form-control" style="width:100%" border-radius:3px; placeholder="Password" />*@
+
+                                            @Html.TextBoxFor(m => m.Password, new { @id = "Password", autofocus = "autofocus", @class = "form-control", autocomplete = "off", maxlength = 4, style = "width:100%;  border-radius:3px; placeholder='Password'" }) <br />
+
+                                        </div>
+
+                                        <div class="form-group text-center" style="padding:10px 0px;">
+                                            <a>
+                                                <button class="btn btn-success" type="submit" style="background:#db2e03 !important; border:none; padding:10px 40px;">Login</button>
+                                            </a>
+                                            <br />
+                                            <br />
+                                            @Html.ValidationSummary(true, "", new { @class = "label-danger", @style = "color: #000000;font-weight:bold;", @id = "ValidationSummary" })
+                                        </div>
+
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- /.container -->
+            <footer>
+                <div class="container-fluid" style="margin-top:10px; text-align:center; color:#fff;border:">
+                    Copyright &copy;
+                    <script>document.write(new Date().getFullYear())</script> Star Union Dai-ichi Life Insurance Company Limited. All rights reserved.
+                </div>
+            </footer>
+        </div>
+    }
+
+</body>
+</html>
+
+
+
+<script type="text/javascript">
+
+    function FocusText() {
+        debugger;
+        $("Password").focus();
+    }
+
+    $(document).ready(function () {
+     //   debugger;
+        $("#lnkResendOTP").hide();
+        $("#lnkGenerateOTP").show();
+        
+    });
+
+ function getOTP() {
+        $("#ValidationSummary").toggle("hide");
+        $("#Password").val("");
+        var email = document.getElementById("EmpId").value;
+        var lblError = document.getElementById("lblError");
+        lblError.innerHTML = "";
+        var expr = /^([\w-\.]+)@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+        if (!expr.test(email)) {
+            lblError.innerHTML = "Invalid email address.";
+        }
+
+        else {
+            
+            var request = {};
+    @*  request.MobileNo = $("#MobileNo").val();*@
+            request.EmpId = $("#EmpId").val();
+            this.ValidateUser(request).then(function (data) {
+                
+                $("#divTimer").toggle("slide");
+                $("#divOTP").toggle("slide");
+                $("#lnkGenerate").toggle("hide");                
+                const myJSON = JSON.stringify(data);
+                const myObj = JSON.parse(myJSON);
+                var x = myObj["IsSuccess"];                
+                if (x == true) {
+                        countdown();
+                    setInterval(function () {
+                        var request = {};
+                        request.EmpId = $("#EmpId").val();
+                        
+                        baseApiService.apiPost('@Url.Action("ExpireOTP", "Home")', request, true).then(function (response) {
+                            showResendOTP();
+                            $("#divTimer").toggle("slide");
+                            $("#divOTP").toggle("slide");
+                            
+                        });
+                    }, 120000);  // 3 Minutes 78000
+                }
+                
+                else {
+
+                    @* $("#divTimer").toggle("hide");
+                    $("#divOTP").toggle("hide");
+                    $("#lnkGenerate").toggle("slide");
+                    data.ReturnMessage = data.ReturnMessage;
+                    alert(data['returnMessage']); *@
+                }
+            });
+        }
+    }
+    function showResendOTP() {
+        $("#lnkGenerate").toggle("slide");
+        $("#lnkGenerateOTP").toggle("hide");
+        $("#divTimer").toggle("slide");
+        $("#lnkResendOTP").toggle("slide");
+        $("#divOTP").toggle("hide");
+        $("#ValidationSummary").toggle("hide");
+        $("#Password").val("");
+    }    
+    
+    //function showResendOTP() {
+       
+    //    $("#lnkGenerate").toggle("slide");
+    //    $("#lnkGenerateOTP").toggle("hide");
+    //    $("#divTimer").toggle("slide");
+    //    $("#lnkResendOTP").toggle("slide");
+    //    $("#divOTP").toggle("hide");
+    //    $("#ValidationSummary").toggle("hide");
+    //    $("#Password").val("");
+    //}
+    this.ValidateUser = function (request) {
+        //debugger;
+        return baseApiService.apiPost('@Url.Action("ValidateUser", "Home")', request, true);
+    }
+
+    var mins = 2;
+    var secs = mins * 60;
+    function resendOTP() {
+        debugger;
+        mins = 2;
+        secs = mins * 60;
+        $("#minutes").val("");
+        $("#seconds").val("");
+        //$("#divOTP").toggle("slide");
+        //$("#divTimer").toggle("slide");
+        getOTP();
+    }
+    function countdown() {
+        setTimeout('Decrement()', 60);
+        
+    }
+    function Decrement() {
+        //alert(document.getElementById("minutes"));
+        if (document.getElementById) {
+            minutes.style.color = "red";
+            seconds.style.color = "red";
+            minutes = document.getElementById("minutes");
+            seconds = document.getElementById("seconds");
+            timer = minutes + ':' + seconds;
+            if (seconds < 59) {
+                seconds.value = secs;
+                timer = minutes + ':' + seconds;
+            }
+            else {
+                minutes.value = getminutes();
+                seconds.value = getseconds();
+                timer = minutes + ':' + seconds;
+            }
+            if (mins < 1) {
+                minutes.style.color = "red";
+                seconds.style.color = "red";
+            }
+            if (mins < 0) {
+                //Time up
+                minutes.value = 0;
+                seconds.value = 0;
+                timer = minutes + ':' + seconds;   
+                //resendOTP();
+                showResendOTP();
+            }
+
+            else {
+                mins--;
+                secs--;
+                setTimeout('Decrement()', 1000);
+            }
+        }
+    }
+
+    function getminutes() {
+        mins = Math.floor(secs / 60);
+        return mins;
+    }
+
+    function getseconds() {
+        return secs - Math.round(mins * 60);
+    }
+
+</script>
+

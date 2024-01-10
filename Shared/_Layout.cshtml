@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link href="~/Content/CSS&JS/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/CSS&JS/site.css" rel="stylesheet" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <style>
+        footer {
+            position: fixed;
+            height: 30px;
+            bottom: 0;
+            width: 100%;
+            font-family: Calibri;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" style="border-bottom:1px solid #ff6a00;padding:15px;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="logo"><img src="~/Content/Images/Logo.jpg" id="logoimg" class="img-responsive" style="height:70px;" /></a>
+            </div>
+            <ul class="nav navbar-nav" style="padding:15px;">
+            </ul>
+            <ul class="nav navbar-nav navbar-right" style="padding:14px;font-size:14px;">
+                <li><a href="#"> Welcome: @Session["Emp_Name"]</a></li>
+                <li><a href="~/Home/Logout" />Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+   
+    <footer class="page-footer font-small blue pt-4">
+        <div class="container-fluid text-center text-md-left">
+            <div class="row">
+                <div class="footer-copyright text-center py-3">
+                    Copyright &copy;
+                    <script>document.write(new Date().getFullYear())</script> Star Union Dai-ichi Life Insurance Company Limited. All rights reserved.
+                </div>
+            </div>
+            </div>
+    </footer>
+   
+    
+</body>
+</html>
